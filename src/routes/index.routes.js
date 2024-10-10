@@ -10,6 +10,6 @@ routes.get("/", (req, res) => {
     return res.status(200).send({ message: "Servidor tá bala"});
 })
 
-routes.use("/rapper", rapperRoutes)
+routes.use("/rappers", rapperRoutes)
 
 export default routes

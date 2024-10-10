@@ -1,9 +1,9 @@
 import { Router } from "express"
 
-const rapperRoutes = Router()
+const rappersRoutes = Router()
 
 
-let rapper = [
+let rappers = [
     {
         id: Number(Math.floor (Math.random() *99) + 1),
         nome: "Eminem",
@@ -23,36 +23,33 @@ let rapper = [
     }
 ]
 
-
-
-
 // Rota para buscar todos os elementos do array rapper
-rapperRoutes.get("/", (req, res) => {
-    return res.status(201).send(rapper)
+rappersRoutes.get("/", (req, res) => {
+    return res.status(201).send(rappers)
 }) 
 
 
 // Rota para cadastrar um novo rapper
-rapperRoutes.post("/", (req, res) => {
+rappersRoutes.post("/", (req, res) => {
     const {
-        nome,
-        idade,
-        ativSus,
-        descFisica
-    } = req.body
+        nome, idade, ativSus, descFisica } = req.body
 
     if(!nome || !idade || !ativSus || !descFisica){
         return res.status(404).send({
-            message: "O suspeito não está entre os culpados",
+            message: "O rapper não está entre os culpados",
         })
     }
-
-    //Validação se ele é um suspeito
-    if(ativSus != "sim" && ativSus != "não"){
+    if(!ativSus != "sim" && ativSus != "não"){
         return res.status(404).send({
             message: "Digite sim ou não",
         })
     }
+
+    if ((Number.isInteger(idade)) == false  ) {
+        return res.status(400).send({
+          message: "coloque um numero inteiro para idade!!",
+        })
+      }
 
     const novoRapper = {
         id:  Number(Math.floor (Math.random() *99) + 1),
@@ -61,63 +58,68 @@ rapperRoutes.post("/", (req, res) => {
         ativSus,
         descFisica
     }
-    rapper.push(novoRapper)
+    rappers.push(novoRapper)
     return res.status(201).send({
-        message: "Rapper cadastrado", novoRapper
+        message: "Rapper cadastrado", novoRapper,
     })
 })
 
 // Rota para buscar um elemento específico do array rapper
-rapperRoutes.get("/:id", (req, res) => {
+rappersRoutes.get("/:id", (req, res) => {
     const { id } = req.params
 
-    console.log(id)
+    const rapper = rappers.find((rapper) => rapper.id == id)
 
-    const filme = filme.find((movie) => movie.id === Number(id))
-
-    console.log(filme)
-
-    if (!filme) {
+    if (!rapper) {
         return res.status(404).send({
             message: "Rapper não encontrado"
         })
     }
-    return res.status(200).send(filme)
+    return res.status(200).send(rapper)
 })
 
 // Rota para editar um rapper suspeito
-rapperRoutes.put("/:id", (req, res) => {
+rappersRoutes.put("/:id", (req, res) => {
+    const { id } = req.params
+    const { nome, idade, ativSus, descFisica} = req.body
+  
+    // Busca um suspeito pelo id no array de suspeitos
+    const rapper = rappers.find((rapper) => rapper.id == id)
+  
+    if (!nome || !idade || !ativSus ) {
+      return res.status(400).json({
+        message: "O campo nome, idade e atividade suspeita são obrigatórios!",
+      });
+    }
+  //Validação se a idade do rapper é inteira
+    if ((Number.isInteger(idade)) == false  ) {
+      return res.status(400).send({
+        message: "coloque um numero inteiro para idade!!",
+      })
+    }
+    rapper.nome = nome
+    rapper.idade = idade
+    rapper.ativSus = ativSus
+    rapper.descFisica = descFisica
+  
+    return res.status(200).json({
+      message: "rapper atualizado com sucesso!", rapper
+    });
+  });
+
+// Rota para deletar um rapper
+rappersRoutes.delete("/:id", (req, res) => {
     const { id } = req.params
 
-    const filme = rapper.find((movie) => movie.id === Number(id))
+    const rapper = rappers.find((rapper) => rapper.id === Number(id))
 
-    if (!filme) {
-        return res.status(404).send({ message: "Planeta não encontrado" })
+    if (!rapper) {
+        return res.status(404).json({ message: "Rapper não encontrado" })
     }
 
-    const { nome, temperatura, emCartaz } = req.body
+    rappers = rappers.filter((rapper) => rapper.id != id)
 
-    filme.nome = nome
-    filme.temperatura = temperatura
-    filme.emCartaz = emCartaz
-
-    return res.status(200).send({ message: "Planeta atualizado", filme })
-}
-)
-
-// Rota para deletar um Suspeito
-rapperRoutes.delete("/:id", (req, res) => {
-    const { id } = req.params
-
-    const filme = guloseimas.find((doce) => doce.id === Number(id))
-
-    if (!filme) {
-        return res.status(404).send({ message: "Planeta não encontrado" })
-    }
-
-    rapper = rapper.filter((movie) => movie.id === Number(id))
-
-    return res.status(200).send({ message: "Planeta deletado!", filme })
+    return res.status(200).send({ message: "Rapper deletado!", rappers })
 })
 
-export default rapperRoutes
+export default rappersRoutes

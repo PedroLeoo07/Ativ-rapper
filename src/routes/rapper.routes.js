@@ -32,15 +32,16 @@ rapperRoutes.get("/", (req, res) => {
 }) 
 
 
-// Rota para cadastrar um novo planeta
+// Rota para cadastrar um novo rapper
 rapperRoutes.post("/", (req, res) => {
     const {
         nome,
         idade,
         ativSus,
+        descFisica
     } = req.body
 
-    if(!nome || !idade || !ativSus){
+    if(!nome || !idade || !ativSus || !descFisica){
         return res.status(404).send({
             message: "O suspeito não está entre os culpados",
         })
@@ -54,15 +55,15 @@ rapperRoutes.post("/", (req, res) => {
     }
 
     const novoRapper = {
-        id:  Number(Math.floor (Math.random() *999999) + 1),
+        id:  Number(Math.floor (Math.random() *99) + 1),
         nome,
-        temperatura,
-        agua,
-        atm
+        idade,
+        ativSus,
+        descFisica
     }
     rapper.push(novoRapper)
     return res.status(201).send({
-        message: "Planeta cadastrado", novoRapper
+        message: "Rapper cadastrado", novoRapper
     })
 })
 
@@ -78,7 +79,7 @@ rapperRoutes.get("/:id", (req, res) => {
 
     if (!filme) {
         return res.status(404).send({
-            message: "Planeta não encontrado"
+            message: "Rapper não encontrado"
         })
     }
     return res.status(200).send(filme)

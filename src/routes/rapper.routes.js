@@ -102,10 +102,10 @@ rappersRoutes.put("/:id", (req, res) => {
     rapper.ativSus = ativSus
     rapper.descFisica = descFisica
   
-    return res.status(200).json({
+    return res.status(200).send({
       message: "rapper atualizado com sucesso!", rapper
-    });
-  });
+    })
+  })
 
 // Rota para deletar um rapper
 rappersRoutes.delete("/:id", (req, res) => {
@@ -119,7 +119,7 @@ rappersRoutes.delete("/:id", (req, res) => {
 
     rappers = rappers.filter((rapper) => rapper.id != id)
 
-    return res.status(200).send({ message: "Rapper deletado!", rappers })
+    return res.status(200).send({ message: "Rapper removido!", rappers })
 })
 
 export default rappersRoutes
